@@ -1,0 +1,18 @@
+{
+  "name": "xstate-express",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Jean-Baptiste Musso",
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "@types/express": "^4.17.8",
+    "ts-node-dev": "^1.0.0-pre.62",
+    "tslib": "^2.0.1",
+    "typescript": "^4.0.2"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "xstate": "^4.13.0"
+  }
+}

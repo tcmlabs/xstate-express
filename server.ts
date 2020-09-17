@@ -39,7 +39,7 @@ const makeMachine = (initialState: string) => {
         },
       },
       broken: {
-        type: "final",
+        // type: "final",
       },
     },
   }).withConfig({
@@ -81,25 +81,35 @@ const machineRouter = nextEvents.reduce((accRouter: Router, eventName) => {
     console.log("------");
     console.log("current", currentState.value);
     console.log("transition:", eventName);
-    // const currentState = currentState.value;
 
     const fromState = `${currentState.value}`;
-    // const viaEventName = `checking${currentState.value}`;
     const viaEventName = eventName;
 
     const currentStateValue = currentState.value;
-    console.log("currentState", currentStateValue);
 
     const machineService = interpret(httpMachine)
-      .onTransition((newState) => {
-        console.log("state transition:", newState.value);
+      .onTransition((state) => {
+        console.log("&&&&&&");
+        console.log("state transition:", state.value);
 
-        if (newState.value === currentState.value) {
+        const nextGlobalMachineState = globalMachine.transition(
+          fromState,
+          viaEventName
+        );
+
+        console.log("after transition", nextGlobalMachineState);
+
+        if (state.value === nextGlobalMachineState.value) {
           console.log("Do nothing");
+
+          //   if (je sais pas quoi) {
+          //       res.seend()
+          //   }
+
           return;
         }
 
-        if ((newState.value as string).startsWith("checking")) {
+        if ((state.value as string).startsWith("checking")) {
           console.log("Checking...");
 
           return;
@@ -113,20 +123,20 @@ const machineRouter = nextEvents.reduce((accRouter: Router, eventName) => {
 
         console.log("=====");
         // console.log(globalMachine);
-        const nextGlobalMachineState = globalMachine.transition(
-          fromState,
-          viaEventName
-        );
         console.log("========");
         console.log("========");
         console.log("========");
         // console.log(globalMachine);
-        latestGlobalMachineState = newState;
+        latestGlobalMachineState = state;
         console.log(nextGlobalMachineState.value);
         // // console.log(globalMachine.start)
 
-        res.send({ nextState: newState.value });
+        res.send({ nextState: state.value });
         return;
+      })
+      .onDone((d) => {
+        // only useful for a machine with final state(s)
+        console.log(d);
       })
 
       .start();
